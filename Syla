@@ -1,0 +1,132 @@
+-- CustomUI Library (hosted externally)
+
+local CustomUI = {}
+
+-- Function to create a custom window
+function CustomUI.CreateWindow(properties)
+    -- Create window frame
+    local window = Instance.new("Frame")
+    window.Size = properties.Size or UDim2.new(0, 500, 0, 300)
+    window.Position = properties.Position or UDim2.new(0.5, -250, 0.5, -150)
+    window.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    window.BorderSizePixel = 0
+
+    -- Create the title label
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 30)
+    title.Text = properties.Name or "Custom Window"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.BackgroundTransparency = 1
+    title.TextSize = 24
+    title.TextAlign = Enum.TextXAlignment.Center
+    title.Parent = window
+
+    -- Create the subtitle (if provided)
+    if properties.Subtitle then
+        local subtitle = Instance.new("TextLabel")
+        subtitle.Size = UDim2.new(1, 0, 0, 20)
+        subtitle.Position = UDim2.new(0, 0, 0, 30)
+        subtitle.Text = properties.Subtitle
+        subtitle.TextColor3 = Color3.fromRGB(180, 180, 180)
+        subtitle.BackgroundTransparency = 1
+        subtitle.TextSize = 14
+        subtitle.TextAlign = Enum.TextXAlignment.Center
+        subtitle.Parent = window
+    end
+
+    -- Logo (if provided)
+    if properties.LogoID then
+        local logo = Instance.new("ImageLabel")
+        logo.Size = UDim2.new(0, 50, 0, 50)
+        logo.Position = UDim2.new(0, 10, 0, 10)
+        logo.Image = "rbxassetid://"..properties.LogoID
+        logo.BackgroundTransparency = 1
+        logo.Parent = window
+    end
+
+    -- Loading Screen (if enabled)
+    if properties.LoadingEnabled then
+        local loadingScreen = Instance.new("Frame")
+        loadingScreen.Size = UDim2.new(1, 0, 1, 0)
+        loadingScreen.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        loadingScreen.BackgroundTransparency = 0.6
+        loadingScreen.Parent = window
+
+        local loadingTitle = Instance.new("TextLabel")
+        loadingTitle.Size = UDim2.new(1, 0, 0, 50)
+        loadingTitle.Position = UDim2.new(0, 0, 0.3, 0)
+        loadingTitle.Text = properties.LoadingTitle or "Loading..."
+        loadingTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+        loadingTitle.BackgroundTransparency = 1
+        loadingTitle.TextSize = 24
+        loadingTitle.TextAlign = Enum.TextXAlignment.Center
+        loadingTitle.Parent = loadingScreen
+
+        local loadingSubtitle = Instance.new("TextLabel")
+        loadingSubtitle.Size = UDim2.new(1, 0, 0, 20)
+        loadingSubtitle.Position = UDim2.new(0, 0, 0.4, 0)
+        loadingSubtitle.Text = properties.LoadingSubtitle or "Please Wait"
+        loadingSubtitle.TextColor3 = Color3.fromRGB(180, 180, 180)
+        loadingSubtitle.BackgroundTransparency = 1
+        loadingSubtitle.TextSize = 14
+        loadingSubtitle.TextAlign = Enum.TextXAlignment.Center
+        loadingSubtitle.Parent = loadingScreen
+    end
+
+    -- Return the window instance
+    return window
+end
+
+-- Function to create a custom button inside a window
+function CustomUI.CreateButton(window, buttonProperties)
+    local button = Instance.new("TextButton")
+    button.Size = buttonProperties.Size or UDim2.new(0, 200, 0, 50)
+    button.Position = buttonProperties.Position or UDim2.new(0.5, -100, 0.5, 0)
+    button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    button.Text = buttonProperties.Name or "Button"
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 18
+    button.Font = Enum.Font.Gotham
+    button.Parent = window
+
+    -- Hover effect
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    end)
+
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    end)
+
+    -- Button click event
+    button.MouseButton1Click:Connect(function()
+        if buttonProperties.Callback then
+            buttonProperties.Callback()
+        end
+    end)
+
+    return button
+end
+
+-- Function to implement a basic key system
+function CustomUI.KeySystem(properties)
+    -- Key system setup (just a simple example)
+    local key = properties.Key or {}
+    local isKeyValid = false
+
+    local inputKey = game:GetService("TextService"):InputBox({
+        Title = properties.KeySettings.Title or "Enter Key",
+        Subtitle = properties.KeySettings.Subtitle or "Key System"
+    })
+
+    for _, validKey in pairs(key) do
+        if inputKey == validKey then
+            isKeyValid = true
+            break
+        end
+    end
+
+    return isKeyValid
+end
+
+return CustomUI
